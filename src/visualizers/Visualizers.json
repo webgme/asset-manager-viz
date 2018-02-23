@@ -1,0 +1,8 @@
+[
+  {
+    "id": "AssetManager",
+    "title": "AssetManager",
+    "panel": "panels/AssetManager/AssetManagerPanel",
+    "DEBUG_ONLY": false
+  }
+]

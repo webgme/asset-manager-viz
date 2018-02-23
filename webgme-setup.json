@@ -1,4 +1,16 @@
 {
-  "components": {},
-  "dependencies": {}
+  "components": {
+    "visualizers": {
+      "AssetManager": {
+        "src": "panels/AssetManager/AssetManagerPanel",
+        "title": "AssetManager",
+        "panel": "src/visualizers/panels/AssetManager",
+        "secondary": false,
+        "widget": "src/visualizers/widgets/AssetManager"
+      }
+    }
+  },
+  "dependencies": {
+    "visualizers": {}
+  }
 }
