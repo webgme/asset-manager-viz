@@ -34,10 +34,10 @@ define([
         this.table = $('<table>');
 
         const header= $('<tr>');
-        header.append('<th>', {text: 'Name', class: 'header-name'});
-        header.append('<th>', {text: 'Desc', class: 'header-desc'});
-        header.append('<th>', {text: 'Asset', class: 'header-asset'});
-        header.append('<th>', {text: 'Delete', class: 'header-edit'});
+        header.append($('<th>', {text: 'Name', class: 'header-name'}));
+        header.append($('<th>', {text: 'Desc', class: 'header-desc'}));
+        header.append($('<th>', {text: 'Asset', class: 'header-asset'}));
+        header.append($('<th>', {text: 'Delete', class: 'header-edit'}));
 
         this.tableBody = $('<tbody>');
 
@@ -53,7 +53,6 @@ define([
 
     // Adding/Removing/Updating items
     AssetManagerWidget.prototype.atNewAttributes = function (newAttrs) {
-        this.el.empty();
         this.cycle += 1;
 
         newAttrs.forEach((attr) => {
@@ -76,22 +75,22 @@ define([
     AssetManagerWidget.prototype.addAttribute = function (attr) {
         const attrEl = $('<tr>');
 
-        attrEl.append('<td>', {
+        attrEl.append($('<td>', {
             text: attr.name.substring(CONSTANTS.ATTR_PREFIX.length),
             class: 'row-name'
-        });
+        }));
 
-        attrEl.append('<td>', {
+        attrEl.append($('<td>', {
             text: attr.desc.description,
             class: 'row-desc'
-        });
+        }));
 
-        attrEl.append('<td>', {
+        attrEl.append($('<td>', {
             text: attr.value, // TODO: appened asset widget
             class: 'row-asset'
-        });
+        }));
 
-        attrEl.append('<td>', {class: 'row-edit'}).append('<i>', {class: 'glyphicon glyphicon-trash'});
+        attrEl.append($('<td>', {class: 'row-edit'})).append($('<i>', {class: 'glyphicon glyphicon-trash'}));
 
         this.tableBody.append(attrEl);
 

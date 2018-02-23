@@ -28,8 +28,8 @@ define([
             let newAttributes = [];
 
             if (nodeObj) {
-                newAttributes = nodeObj.getAttributeNames()
-                    .filter(attrName => attrName.startsWith('am_'))
+                newAttributes = nodeObj.getValidAttributeNames()
+                    .filter(attrName => attrName.startsWith(CONSTANTS.ATTR_PREFIX))
                     .sort()
                     .map((attrName) => {
                         return {
