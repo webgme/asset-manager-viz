@@ -5,20 +5,109 @@
 
 define([
     './Constants'
-], function (
-    CONSTANTS
-) {
+], function (CONSTANTS) {
 
     'use strict';
 
     function AssetManagerControl(options) {
         this.logger = options.logger.fork('Control');
-
+        const logger = this.logger;
         this._client = options.client;
         const client = this._client;
 
         // Initialize core collections and variables
         this._widget = options.widget;
+
+
+        this._widget.addNewAttribute = (name, description, value) => {
+            const attrName = `${CONSTANTS.ATTR_PREFIX}${name}`;
+            client.startTransaction();
+
+            try {
+                client.setAttributeMeta(CONSTANTS.NODE_ID, attrName, {
+                    type: 'asset',
+                    hidden: true,
+                    description: description,
+                });
+
+                if (value) {
+                    client.setAttribute(CONSTANTS.NODE_ID, attrName, value);
+                }
+            } catch (err) {
+                logger.error(err);
+            }
+
+            client.completeTransaction();
+        };
+
+        this._widget.updateAttributeDescription = (name, newDescription) => {
+            try {
+                const nodeObj = client.getNode(CONSTANTS.NODE_ID);
+                const attrName = `${CONSTANTS.ATTR_PREFIX}${name}`;
+
+                if (nodeObj) {
+                    const attrDesc = nodeObj.getAttributeMeta(attrName);
+                    attrDesc.description = newDescription;
+
+                    client.setAttributeMeta(CONSTANTS.NODE_ID, `${CONSTANTS.ATTR_PREFIX}${name}`, attrDesc);
+                }
+            } catch (err) {
+                logger.error(err);
+            }
+        };
+
+        this._widget.setAttributeAsset = (name, value) => {
+            try {
+                client.setAttribute(CONSTANTS.NODE_ID, `${CONSTANTS.ATTR_PREFIX}${name}`, value);
+            } catch (err) {
+                logger.error(err);
+            }
+        };
+
+        this._widget.renameAttribute = (name, newName) => {
+            const attrName = `${CONSTANTS.ATTR_PREFIX}${name}`;
+            const newAttrName = `${CONSTANTS.ATTR_PREFIX}${newName}`;
+            const nodeObj = client.getNode(CONSTANTS.NODE_ID);
+
+            if (!newName || newName.indexOf('.') > 0 || newName.indexOf('$') > 0) {
+                return;
+            }
+
+            if (nodeObj) {
+                const attrDesc = nodeObj.getAttributeMeta(attrName);
+
+                client.startTransaction();
+                try {
+                    client.delAttributeMeta(CONSTANTS.NODE_ID, attrName);
+                    client.setAttributeMeta(CONSTANTS.NODE_ID, newAttrName, attrDesc);
+                    // TODO: Add this when the client has it on its API
+                    // client.renameAttributeMeta(attrName, newAttrName);
+
+                    client.renameAttribute(CONSTANTS.NODE_ID, attrName, newAttrName);
+                }
+                catch
+                    (err) {
+                    logger.error(err);
+                }
+
+                client.completeTransaction();
+            }
+        };
+
+        this._widget.deleteAttribute = (name) => {
+            const attrName = `${CONSTANTS.ATTR_PREFIX}${name}`;
+
+            client.startTransaction();
+
+            try {
+                client.delAttributeMeta(CONSTANTS.NODE_ID, attrName);
+                client.delAttribute(CONSTANTS.NODE_ID, attrName);
+            } catch (err) {
+                logger.error(err);
+            }
+
+            client.completeTransaction();
+        };
 
         this._attributes = [];
         this._attributesCompare = JSON.stringify(this._attributes);
@@ -33,7 +122,7 @@ define([
                     .sort()
                     .map((attrName) => {
                         return {
-                            name: attrName,
+                            name: attrName.substring(CONSTANTS.ATTR_PREFIX.length),
                             value: nodeObj.getAttribute(attrName),
                             desc: nodeObj.getAttributeMeta(attrName)
                         }

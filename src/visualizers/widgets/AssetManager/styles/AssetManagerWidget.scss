@@ -4,4 +4,60 @@
 
 .asset-manager {
   outline: none;
+  table {
+    //table-layout: fixed;
+    width: 100%;
+    font-size: 14px;
+
+    .glyphicon {
+      padding: 5px;
+    }
+
+    .in-place-edit {
+      font-size: 14px !important;
+    }
+
+    .action-btn {
+      cursor: pointer;
+    }
+
+    th {
+      font-weight: bold;
+      &.header-name {
+        cursor: pointer;
+      }
+    }
+
+    td.row-name {
+      min-width: 80px;
+      width: calc(10% - 20px);
+    }
+
+    td.row-desc {
+      width: calc(45% - 20px);
+      font-style: italic;
+    }
+
+    td.row-asset {
+      min-width: 200px;
+      width: calc(35% - 20px);
+      .asset-widget {
+        width: 100%;
+        height: 40px;
+        background-color: transparent;
+        .blob-download-link {
+          padding-top: 14px;
+          font-size: 12px;
+        }
+      }
+    }
+
+    td.row-edit {
+      width: 60px;
+    }
+
+    tr:hover {
+      background-color: #1b7ebb26;
+    }
+  }
 }
