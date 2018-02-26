@@ -3,6 +3,12 @@
  */
 .asset-manager {
   outline: none; }
+  .asset-manager.read-only .top-bar .create-btn {
+    display: none; }
+  .asset-manager.read-only table .action-btn {
+    cursor: not-allowed; }
+    .asset-manager.read-only table .action-btn.delete-btn {
+      color: gray; }
   .asset-manager .top-bar {
     display: inline-flex;
     margin-bottom: 8px; }

@@ -4,6 +4,25 @@
 
 .asset-manager {
   outline: none;
+
+  &.read-only {
+    .top-bar {
+      .create-btn {
+        display: none;
+      }
+    }
+
+    table {
+      .action-btn {
+        cursor: not-allowed;
+        &.delete-btn {
+          color: gray;
+
+        }
+      }
+    }
+  }
+
   .top-bar {
     display: inline-flex;
     margin-bottom: 8px;

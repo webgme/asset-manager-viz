@@ -22,6 +22,7 @@ define([
 
         this.attrs = {};
         this.cycle = 0;
+        this.readOnly = false;
 
         this.logger.debug('ctor finished');
     }
@@ -42,6 +43,10 @@ define([
             title: 'Create new asset'});
 
         this.createNewBtn.on('click', () => {
+            if (this.readOnly) {
+                return;
+            }
+
             const addRow = $('<tr>');
             const nameInput = $('<td>');
             addRow.append(nameInput);
@@ -117,6 +122,9 @@ define([
 
         this.tableBody.on('click', '.delete-btn', (event) => {
             const attrName = $(event.target).closest('tr').data('id');
+            if (this.readOnly) {
+                return;
+            }
 
             (new ConfirmDialog()).show({deleteItem: attrName}, () => {
                 this.deleteAttribute(attrName);
@@ -127,6 +135,10 @@ define([
         this.tableBody.on('dblclick', '.row-name', (event) => {
             const trEl = $(event.target);
             const attrName = trEl.closest('tr').data('id');
+            if (this.readOnly) {
+                return;
+            }
+
             trEl.editInPlace({
                 class: 'in-place-edit',
                 value: attrName,
@@ -144,6 +156,9 @@ define([
             const trEl = $(event.target);
             const attrName = trEl.closest('tr').data('id');
             const desc = trEl.text();
+            if (this.readOnly) {
+                return;
+            }
 
             trEl.editInPlace({
                 class: 'in-place-edit',
@@ -293,6 +308,21 @@ define([
     };
 
     /* * * * * * * * Visualizer life cycle callbacks * * * * * * * */
+    AssetManagerWidget.prototype.setReadOnly = function (isReadOnly) {
+        this.readOnly = isReadOnly;
+        Object.keys(this.attrs).forEach((attrId) => {
+            const attrItem = this.attrs[attrId];
+
+            attrItem.assetWidget.setReadOnly(isReadOnly);
+        });
+
+        if (this.readOnly) {
+            this.el.addClass('read-only');
+        } else {
+            this.el.removeClass('read-only');
+        }
+    };
+
     AssetManagerWidget.prototype.destroy = function () {
     };
 
