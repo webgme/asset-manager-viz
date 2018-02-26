@@ -33,7 +33,8 @@
       width: 200px;
       position: absolute;
       left: calc(50% - 200px);
-      * {
+      .asset-filter {
+        border-radius: 10px;
         font-size: 12px;
       }
     }

@@ -18,7 +18,8 @@
       width: 200px;
       position: absolute;
       left: calc(50% - 200px); }
-      .asset-manager .top-bar .input-group * {
+      .asset-manager .top-bar .input-group .asset-filter {
+        border-radius: 10px;
         font-size: 12px; }
     .asset-manager .top-bar .create-btn {
       position: absolute;

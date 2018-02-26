@@ -70,14 +70,14 @@ define([
         this.el.append(topBar);
 
         topBar.append($('<div class="input-group">' +
-            '<span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-filter"/></span>' +
+            // '<span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-filter"/></span>' +
             '<input type="text" class="form-control asset-filter" placeholder="Filter.." aria-describedby="basic-addon1">' +
             '</div>'));
 
         this.filterInput = topBar.find('input.asset-filter');
 
         this.filterInput.on('change paste keyup', (event) => {
-            console.log('Change in filter,', event.target.value);
+            //console.log('Change in filter,', event.target.value);
             this.filter = (event.target.value || '').toUpperCase();
             this.applySortAndFilters();
         });
