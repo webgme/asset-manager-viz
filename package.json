@@ -1,5 +1,22 @@
 {
   "name": "webgme-asset-manager-viz",
+  "author": {
+    "name": "WebGME Development Team",
+    "url": "https://webgme.org"
+  },
+  "description": "Table-like visualizer for handling assets on project level.",
+  "keywords": [
+    "webgme",
+    "webgme-component",
+    "webgme-visualizer",
+    "blob-assets"
+  ],
+  "license": "MIT"
+  ,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webgme/asset-manager-viz.git"
+  },
   "scripts": {
     "start": "node app.js",
     "test": "node ./node_modules/mocha/bin/mocha --recursive test",
@@ -13,7 +30,7 @@
     "users": "node ./node_modules/webgme-engine/src/bin/usermanager.js",
     "clean_up": "node ./node_modules/webgme-engine/src/bin/clean_up.js"
   },
-  "version": "0.1.0",
+  "version": "0.0.1",
   "peerDependencies": {
     "webgme": "^2.0.0"
   },
