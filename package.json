@@ -11,8 +11,7 @@
     "webgme-visualizer",
     "blob-assets"
   ],
-  "license": "MIT"
-  ,
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/webgme/asset-manager-viz.git"
