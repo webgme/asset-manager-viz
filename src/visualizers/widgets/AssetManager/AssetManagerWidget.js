@@ -27,12 +27,57 @@ define([
     }
 
     AssetManagerWidget.prototype._initialize = function () {
-        var width = this.el.width(),
-            height = this.el.height(),
-            self = this;
+        // var width = this.el.width(),
+        //     height = this.el.height(),
+        //     self = this;
 
         // set widget class
         this.el.addClass(WIDGET_CLASS);
+
+        const topBar = $('<span>', {class: 'top-bar'});
+
+        topBar.append($('<span>', {class: 'top-bar-title', text: 'Assets'}));
+
+        this.createNewBtn = $('<i>', {class: 'create-btn glyphicon glyphicon-plus-sign pull-right',
+            title: 'Create new asset'});
+
+        this.createNewBtn.on('click', () => {
+            const addRow = $('<tr>');
+            const nameInput = $('<td>');
+            addRow.append(nameInput);
+
+            addRow.appendTo(this.table);
+
+            nameInput.editInPlace({
+                class: 'in-place-edit',
+                value: 'NewAsset',
+                onChange: (oldValue, newValue) => {
+                    this.addNewAttribute(newValue);
+                },
+                onFinish: () => {
+                    addRow.remove();
+                }
+            });
+        });
+
+        topBar.append(this.createNewBtn);
+
+        this.el.append(topBar);
+
+        topBar.append($('<div class="input-group">' +
+            '<span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-filter"/></span>' +
+            '<input type="text" class="form-control asset-filter" placeholder="Filter.." aria-describedby="basic-addon1">' +
+            '</div>'));
+
+        this.filterInput = topBar.find('input.asset-filter');
+
+        this.filterInput.on('change paste keyup', (event) => {
+            console.log('Change in filter,', event.target.value);
+            this.filter = (event.target.value || '').toUpperCase();
+            this.applySortAndFilters();
+        });
+
+        this.filter = '';
 
         this.table = $('<table>', {class: 'table table-bordered table-striped'});
 
@@ -55,6 +100,7 @@ define([
         this.sortIcon = $('<i>', {class: 'glyphicon glyphicon-sort-by-attributes sort-icon'});
         this.reverseSortIcon = $('<i>', {class: 'glyphicon glyphicon-sort-by-attributes-alt sort-icon'});
 
+        this.sortIcon.hide();
         this.reverseSortIcon.hide();
 
         nameHeader.append(this.sortIcon).append(this.reverseSortIcon);
@@ -175,8 +221,8 @@ define([
         attrEl.append(assetRow);
 
         attrEl.append($('<td>', {class: 'row-edit'})
-            .append($('<i>', {class: 'action-btn copy-btn glyphicon glyphicon-copy'}))
-            .append($('<i>', {class: 'action-btn delete-btn glyphicon glyphicon-trash'}))
+            // .append($('<i>', {class: 'action-btn copy-btn glyphicon glyphicon-copy'}))
+            .append($('<i>', {class: 'action-btn delete-btn glyphicon glyphicon-trash', title: 'Delete asset...'}))
         );
 
         this.tableBody.append(attrEl);
@@ -226,6 +272,21 @@ define([
             }
 
             return 0;
+        });
+
+        rows.each((idx) => {
+            const rowEl = $(rows[idx]);
+            const rowName = rowEl.children('td').eq(0).text().toUpperCase();
+
+            if (this.filter) {
+                if (rowName.indexOf(this.filter) === -1) {
+                    rowEl.hide();
+                } else {
+                    rowEl.show();
+                }
+            } else {
+                rowEl.show();
+            }
         });
 
         rows.detach().appendTo(this.tableBody);

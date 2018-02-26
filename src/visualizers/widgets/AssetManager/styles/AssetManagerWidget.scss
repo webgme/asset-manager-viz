@@ -4,6 +4,30 @@
 
 .asset-manager {
   outline: none;
+  .top-bar {
+    display: inline-flex;
+    margin-bottom: 8px;
+    .top-bar-title {
+      font-size: 24px;
+    }
+    .input-group {
+      width: 200px;
+      position: absolute;
+      left: calc(50% - 200px);
+      * {
+        font-size: 12px;
+      }
+    }
+    .create-btn {
+      position: absolute;
+      top: 10px;
+      right: 36px;
+      font-size: 40px;
+      color: green;
+      cursor: pointer;
+    }
+  }
+
   table {
     //table-layout: fixed;
     width: 100%;
@@ -19,6 +43,9 @@
 
     .action-btn {
       cursor: pointer;
+      &.delete-btn {
+        color: darkred;
+      }
     }
 
     th {

@@ -21,23 +21,42 @@ define([
 
         this._widget.addNewAttribute = (name, description, value) => {
             const attrName = `${CONSTANTS.ATTR_PREFIX}${name}`;
-            client.startTransaction();
 
-            try {
-                client.setAttributeMeta(CONSTANTS.NODE_ID, attrName, {
-                    type: 'asset',
-                    hidden: true,
-                    description: description,
-                });
-
-                if (value) {
-                    client.setAttribute(CONSTANTS.NODE_ID, attrName, value);
-                }
-            } catch (err) {
-                logger.error(err);
+            if (!attrName || attrName.indexOf('.') > 0 || attrName.indexOf('$') > 0) {
+                client.notifyUser({severity: 'error', message: 'Invalid attribute name, cannot contain . or $.'});
+                return;
             }
 
-            client.completeTransaction();
+            const nodeObj = client.getNode(CONSTANTS.NODE_ID);
+
+            if (nodeObj) {
+
+                client.startTransaction();
+
+                try {
+                    if (nodeObj.getValidAttributeNames().indexOf(attrName) > -1) {
+                        throw new Error('Asset name is already taken, provide another one.');
+                    }
+
+                    client.setAttributeMeta(CONSTANTS.NODE_ID, attrName, {
+                        type: 'asset',
+                        hidden: true,
+                        description: description || '',
+                    });
+
+                    if (value) {
+                        client.setAttribute(CONSTANTS.NODE_ID, attrName, value);
+                    }
+
+                    client.notifyUser({severity: 'success',
+                        message: 'Created new asset [' + name + '], edit content and description in table.'});
+                } catch (err) {
+                    logger.error(err);
+                    client.notifyUser({severity: 'error', message: err.message});
+                }
+
+                client.completeTransaction();
+            }
         };
 
         this._widget.updateAttributeDescription = (name, newDescription) => {
@@ -53,6 +72,7 @@ define([
                 }
             } catch (err) {
                 logger.error(err);
+                client.notifyUser({severity: 'error', message: err.message});
             }
         };
 
@@ -61,6 +81,7 @@ define([
                 client.setAttribute(CONSTANTS.NODE_ID, `${CONSTANTS.ATTR_PREFIX}${name}`, value);
             } catch (err) {
                 logger.error(err);
+                client.notifyUser({severity: 'error', message: err.message});
             }
         };
 
@@ -70,6 +91,7 @@ define([
             const nodeObj = client.getNode(CONSTANTS.NODE_ID);
 
             if (!newName || newName.indexOf('.') > 0 || newName.indexOf('$') > 0) {
+                client.notifyUser({severity: 'error', message: 'Invalid attribute name, cannot contain . or $.'});
                 return;
             }
 
@@ -78,6 +100,9 @@ define([
 
                 client.startTransaction();
                 try {
+                    if (nodeObj.getValidAttributeNames().indexOf(newAttrName) > -1) {
+                        throw new Error('Asset name is already taken, provide another one.');
+                    }
                     client.delAttributeMeta(CONSTANTS.NODE_ID, attrName);
                     client.setAttributeMeta(CONSTANTS.NODE_ID, newAttrName, attrDesc);
                     // TODO: Add this when the client has it on its API
@@ -85,9 +110,9 @@ define([
 
                     client.renameAttribute(CONSTANTS.NODE_ID, attrName, newAttrName);
                 }
-                catch
-                    (err) {
+                catch (err) {
                     logger.error(err);
+                    client.notifyUser({severity: 'error', message: err.message});
                 }
 
                 client.completeTransaction();
@@ -104,6 +129,7 @@ define([
                 client.delAttribute(CONSTANTS.NODE_ID, attrName);
             } catch (err) {
                 logger.error(err);
+                client.notifyUser({severity: 'error', message: err.message});
             }
 
             client.completeTransaction();

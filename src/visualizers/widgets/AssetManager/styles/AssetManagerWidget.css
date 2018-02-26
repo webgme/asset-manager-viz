@@ -3,6 +3,24 @@
  */
 .asset-manager {
   outline: none; }
+  .asset-manager .top-bar {
+    display: inline-flex;
+    margin-bottom: 8px; }
+    .asset-manager .top-bar .top-bar-title {
+      font-size: 24px; }
+    .asset-manager .top-bar .input-group {
+      width: 200px;
+      position: absolute;
+      left: calc(50% - 200px); }
+      .asset-manager .top-bar .input-group * {
+        font-size: 12px; }
+    .asset-manager .top-bar .create-btn {
+      position: absolute;
+      top: 10px;
+      right: 36px;
+      font-size: 40px;
+      color: green;
+      cursor: pointer; }
   .asset-manager table {
     width: 100%;
     font-size: 14px; }
@@ -12,6 +30,8 @@
       font-size: 14px !important; }
     .asset-manager table .action-btn {
       cursor: pointer; }
+      .asset-manager table .action-btn.delete-btn {
+        color: darkred; }
     .asset-manager table th {
       font-weight: bold; }
       .asset-manager table th.header-name {
