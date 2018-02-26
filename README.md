@@ -16,7 +16,7 @@ Using the [webgme-cli](https://github.com/webgme/webgme-cli) the following piece
 
 #### Visualizer
 ```
-webgme import viz AssetManagerViz webgme-asset-manager-viz
+webgme import viz AssetManager webgme-asset-manager-viz
 ```
 
 ## Developers
