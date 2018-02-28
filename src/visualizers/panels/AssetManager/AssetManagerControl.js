@@ -18,6 +18,9 @@ define([
         // Initialize core collections and variables
         this._widget = options.widget;
 
+        this._widget.notifyUser = (msg) => {
+            client.notifyUser(msg);
+        };
 
         this._widget.addNewAttribute = (name, description, value) => {
             const attrName = `${CONSTANTS.ATTR_PREFIX}${name}`;

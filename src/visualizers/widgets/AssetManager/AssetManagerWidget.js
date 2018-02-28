@@ -9,8 +9,10 @@ define([
     'js/Controls/PropertyGrid/Widgets/AssetWidget',
     'js/Dialogs/MultiTab/MultiTabDialog',
     'js/Dialogs/Confirm/ConfirmDialog',
+    'blob/BlobClient',
+    'clipboard',
     'css!./styles/AssetManagerWidget.css'
-], function (CONSTANTS, AssetWidget, MultiTabDialog, ConfirmDialog) {
+], function (CONSTANTS, AssetWidget, MultiTabDialog, ConfirmDialog, BlobClient, Clipboard) {
     'use strict';
 
     const WIDGET_CLASS = 'asset-manager';
@@ -18,6 +20,7 @@ define([
     function AssetManagerWidget(logger, container) {
         this.logger = logger.fork('Widget');
         this.el = container;
+        this.blobClient = new BlobClient({logger: this.logger.fork('BlobClient')});
         this._initialize();
 
         this.attrs = {};
@@ -55,7 +58,7 @@ define([
 
             nameInput.editInPlace({
                 class: 'in-place-edit',
-                value: 'NewAsset',
+                value: '',
                 onChange: (oldValue, newValue) => {
                     this.addNewAttribute(newValue);
                 },
@@ -130,6 +133,11 @@ define([
                 this.deleteAttribute(attrName);
             });
 
+        });
+
+        this.tableBody.on('click', '.copy-download-url-btn, .copy-view-url-btn', (event) => {
+            this.notifyUser({severity: 'success', message: 'Url copied to clipboard "' +
+                $(event.target).attr('data-clipboard-text') + '".'});
         });
 
         this.tableBody.on('dblclick', '.row-name', (event) => {
@@ -236,9 +244,30 @@ define([
         attrEl.append(assetRow);
 
         attrEl.append($('<td>', {class: 'row-edit'})
-            // .append($('<i>', {class: 'action-btn copy-btn glyphicon glyphicon-copy'}))
-            .append($('<i>', {class: 'action-btn delete-btn glyphicon glyphicon-trash', title: 'Delete asset...'}))
+            .append($('<i>', {
+                class: 'action-btn copy-view-url-btn glyphicon glyphicon-eye-open',
+                tile: 'Copy view url to clipboard'
+            }))
+            .append($('<i>', {
+                class: 'action-btn copy-download-url-btn glyphicon glyphicon-copy',
+                tile: 'Copy download url to clipboard'
+            }))
+            .append($('<i>', {
+                class: 'action-btn delete-btn glyphicon glyphicon-trash',
+                title: 'Delete asset...'
+            }))
         );
+
+        const copyViewBtn = attrEl.find('.copy-view-url-btn');
+        const copyDownloadBtn = attrEl.find('.copy-download-url-btn');
+
+        if (attr.value) {
+            copyViewBtn.attr('data-clipboard-text', this.blobClient.getRelativeViewURL(attr.value));
+            copyDownloadBtn.attr('data-clipboard-text', this.blobClient.getRelativeDownloadURL(attr.value));
+        } else {
+            copyViewBtn.hide();
+            copyDownloadBtn.hide();
+        }
 
         this.tableBody.append(attrEl);
 
@@ -247,7 +276,8 @@ define([
             value: attr.value,
             description: attr.desc.description,
             cycle: this.cycle,
-            assetWidget: assetWidget
+            assetWidget: assetWidget,
+            clipboards: [(new Clipboard(copyViewBtn[0])), (new Clipboard(copyDownloadBtn[0]))]
         };
     };
 
@@ -257,6 +287,19 @@ define([
         if (this.attrs[attr.name].value !== attr.value) {
             this.attrs[attr.name].assetWidget.setValue(attr.value);
             this.attrs[attr.name].value = attr.value;
+
+            const copyViewBtn = attrEl.find('.copy-view-url-btn');
+            const copyDownloadBtn = attrEl.find('.copy-download-url-btn');
+
+            if (attr.value) {
+                copyViewBtn.attr('data-clipboard-text', this.blobClient.getRelativeViewURL(attr.value));
+                copyDownloadBtn.attr('data-clipboard-text', this.blobClient.getRelativeDownloadURL(attr.value));
+                copyViewBtn.show();
+                copyDownloadBtn.show();
+            } else {
+                copyViewBtn.hide();
+                copyDownloadBtn.hide();
+            }
         }
 
         if (this.attrs[attr.name].description !== attr.desc.description) {
@@ -269,6 +312,8 @@ define([
     };
 
     AssetManagerWidget.prototype.removeAttribute = function (attrName) {
+        this.attrs[attrName].assetWidget.destroy();
+        this.attrs[attr.name].clipboards.forEach(cb => cb.destroy());
         this.attrs[attrName].el.remove();
         delete this.attrs[attrName];
     };
@@ -324,6 +369,12 @@ define([
     };
 
     AssetManagerWidget.prototype.destroy = function () {
+        Object.keys(this.attrs).forEach((attrId) => {
+            const attrItem = this.attrs[attrId];
+
+            attrItem.assetWidget.destroy();
+            attrItem.clipboards.forEach(cb => cb.destroy());
+        });
     };
 
     AssetManagerWidget.prototype.onActivate = function () {

@@ -5,10 +5,9 @@
   outline: none; }
   .asset-manager.read-only .top-bar .create-btn {
     display: none; }
-  .asset-manager.read-only table .action-btn {
-    cursor: not-allowed; }
-    .asset-manager.read-only table .action-btn.delete-btn {
-      color: gray; }
+  .asset-manager.read-only table .action-btn.delete-btn {
+    cursor: not-allowed;
+    color: gray; }
   .asset-manager .top-bar {
     display: inline-flex;
     margin-bottom: 8px; }
@@ -36,9 +35,14 @@
     .asset-manager table .in-place-edit {
       font-size: 14px !important; }
     .asset-manager table .action-btn {
-      cursor: pointer; }
+      cursor: copy;
+      padding-top: 8px; }
       .asset-manager table .action-btn.delete-btn {
-        color: darkred; }
+        cursor: pointer; }
+      .asset-manager table .action-btn:hover {
+        color: #3160ab; }
+        .asset-manager table .action-btn:hover.delete-btn {
+          color: darkred; }
     .asset-manager table th {
       font-weight: bold; }
       .asset-manager table th.header-name {
@@ -60,6 +64,7 @@
           padding-top: 14px;
           font-size: 12px; }
     .asset-manager table td.row-edit {
-      width: 60px; }
+      text-align: center;
+      width: 90px; }
     .asset-manager table tr:hover {
       background-color: #1b7ebb26; }

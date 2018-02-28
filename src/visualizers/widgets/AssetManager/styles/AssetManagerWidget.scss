@@ -14,10 +14,9 @@
 
     table {
       .action-btn {
-        cursor: not-allowed;
         &.delete-btn {
+          cursor: not-allowed;
           color: gray;
-
         }
       }
     }
@@ -62,9 +61,16 @@
     }
 
     .action-btn {
-      cursor: pointer;
+      cursor: copy;
+      padding-top: 8px;
       &.delete-btn {
-        color: darkred;
+        cursor: pointer;
+      }
+      &:hover {
+        color: #3160ab;
+        &.delete-btn {
+          color: darkred;
+        }
       }
     }
 
@@ -100,7 +106,8 @@
     }
 
     td.row-edit {
-      width: 60px;
+      text-align: center;
+      width: 90px;
     }
 
     tr:hover {
