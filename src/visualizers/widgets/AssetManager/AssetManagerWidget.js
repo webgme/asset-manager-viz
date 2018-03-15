@@ -313,7 +313,7 @@ define([
 
     AssetManagerWidget.prototype.removeAttribute = function (attrName) {
         this.attrs[attrName].assetWidget.destroy();
-        this.attrs[attr.name].clipboards.forEach(cb => cb.destroy());
+        this.attrs[attrName].clipboards.forEach(cb => cb.destroy());
         this.attrs[attrName].el.remove();
         delete this.attrs[attrName];
     };
