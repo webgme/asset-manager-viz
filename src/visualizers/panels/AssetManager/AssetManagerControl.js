@@ -4,7 +4,7 @@
  */
 
 define([
-    './Constants'
+    './CONSTANTS'
 ], function (CONSTANTS) {
 
     'use strict';
