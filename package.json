@@ -29,7 +29,7 @@
     "users": "node ./node_modules/webgme-engine/src/bin/usermanager.js",
     "clean_up": "node ./node_modules/webgme-engine/src/bin/clean_up.js"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "peerDependencies": {
     "webgme": "^2.0.0"
   },
